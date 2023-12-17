@@ -13,7 +13,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            'components': path.resolve(__dirname, 'resources/js/components')
+            '@': path.resolve(__dirname, 'resources/js/')
         }
     }
 });
