@@ -9,46 +9,32 @@ use App\Models\Activity;
 use App\Models\User;
 use App\Services\Activities\ActivityService;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Connection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class ActivitiesController extends Controller
 {
     /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var User
-     */
-    private $model;
-
-    /**
-     * @var ActivityService
-     */
-    private $activityService;
-
-    /**
      * UsersController constructor.
      *
      * @param Connection $db
-     * @param Activity $activity
+     * @param Activity $model
      * @param ActivityService $activityService
      */
-    public function __construct(Connection $db, Activity $activity, ActivityService $activityService)
+    public function __construct(private Connection $db, private Activity $model, private ActivityService $activityService)
     {
-        $this->db = $db;
-        $this->model = $activity;
-        $this->activityService = $activityService;
+        //
     }
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Activity::class);
 
@@ -70,10 +56,10 @@ class ActivitiesController extends Controller
 
     /**
      * @param AddActivityRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Throwable
+     * @return JsonResponse|Exception
+     * @throws Throwable
      */
-    public function store(AddActivityRequest $request)
+    public function store(AddActivityRequest $request): JsonResponse|Exception
     {
         try {
             $this->db->beginTransaction();
@@ -96,12 +82,11 @@ class ActivitiesController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param Activity $activity
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function show(Request $request, Activity $activity)
+    public function show(Activity $activity): JsonResponse
     {
         $this->authorize('view', $activity);
 
@@ -111,10 +96,10 @@ class ActivitiesController extends Controller
     /**
      * @param UpdateActivityRequest $request
      * @param Activity $activity
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Throwable
+     * @return JsonResponse|Exception
+     * @throws Throwable
      */
-    public function update(UpdateActivityRequest $request, Activity $activity)
+    public function update(UpdateActivityRequest $request, Activity $activity): JsonResponse|Exception
     {
         try {
             $this->db->beginTransaction();
@@ -135,12 +120,11 @@ class ActivitiesController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param Activity $activity
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return JsonResponse|Exception
+     * @throws AuthorizationException
      */
-    public function destroy(Request $request, Activity $activity)
+    public function destroy(Activity $activity): JsonResponse|Exception
     {
         $this->authorize('delete', $activity);
 

@@ -4,39 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Database\Connection;
-use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 
 class UsersController extends Controller
 {
     /**
-     * @var Connection
+     * @param User $model
      */
-    private $db;
-
-    /**
-     * @var User
-     */
-    private $model;
-
-    /**
-     * UsersController constructor.
-     *
-     * @param Connection $db
-     * @param User $user
-     */
-    public function __construct(Connection $db, User $user)
+    public function __construct(private User $model)
     {
-        $this->db = $db;
-        $this->model = $user;
+        //
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return JsonResponse
+     * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(): JsonResponse
     {
         $this->authorize('viewAny', User::class);
 
@@ -44,11 +29,9 @@ class UsersController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return JsonResponse
      */
-    public function account(Request $request)
+    public function account(): JsonResponse
     {
         $user = auth()->user();
 

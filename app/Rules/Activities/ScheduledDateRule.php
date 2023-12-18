@@ -34,7 +34,7 @@ class ScheduledDateRule implements ValidationRule
             $scheduledActivities = Activity::query()->where('scheduled_at', $value)->count();
 
             if ($scheduledActivities > 3) {
-                $fail('Maximum activities for this date. Please select another date.');
+                $fail(__('validation.max_activity_count'));
             }
         }
     }

@@ -13,7 +13,7 @@ class AddActivityRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return auth()->user()->can('create', Activity::class);
     }
@@ -23,7 +23,7 @@ class AddActivityRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = Activity::$rules;
         $rules = array_merge_recursive($rules, [

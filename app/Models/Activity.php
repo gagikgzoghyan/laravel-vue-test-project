@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -12,11 +14,11 @@ use Illuminate\Support\Collection;
  * @property string description
  * @property string image_path
  * @property string scheduled_at Timestamp
- * @property string created_at Timestamp
- * @property string updated_at Timestamp
- * @property string deleted_at Timestamp
+ * @property Carbon created_at
+ * @property Carbon updated_at
+ * @property Carbon deleted_at
  * --- relations ---
- * @property Collection users
+ * @property-read Collection<User> users
  */
 class Activity extends Model
 {
@@ -66,7 +68,7 @@ class Activity extends Model
      *
      * @return array
      */
-    public static $rules = [
+    public static array $rules = [
         'name' => ['required', 'string', 'max:100'],
         'description' => ['required', 'string', 'max:255'],
         'upload_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png'],
@@ -95,19 +97,19 @@ class Activity extends Model
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Builder $query
      * @param array $dateRange
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
-    public function scopeScheduledAt(Builder $query, array $dateRange)
+    public function scopeScheduledAt(Builder $query, array $dateRange): Builder
     {
         return $query->whereBetween('scheduled_at', [$dateRange[0], $dateRange[1]]);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }

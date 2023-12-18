@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,13 +15,13 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string first_name
  * @property string last_name
  * @property string email
- * @property string created_at Timestamp
- * @property string updated_at Timestamp
+ * @property Carbon created_at
+ * @property Carbon updated_at
  * --- custom attributes ---
  * @property string full_name
  * --- relations ---
- * @property Collection roles
- * @property Collection activities
+ * @property-read Collection<Role> roles
+ * @property-read Collection<Activity> activities
  */
 class User extends Authenticatable
 {
@@ -95,17 +97,17 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
-    public function activities(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function activities(): BelongsToMany
     {
         return $this->belongsToMany(Activity::class);
     }
